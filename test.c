@@ -97,12 +97,10 @@ int main() {
     Tensor* batch_x = create_zero_tensor((int[]){B, 784}, 2);
     Tensor* batch_y = create_zero_tensor((int[]){B, 10}, 2);
 
-
     struct timeval start, end;
     double elapsed_time;
     get_time(&start);
     printf("Start Time: %ld.%06ld seconds\n", start.tv_sec, start.tv_usec);
-
 
     for (int i = 0; i < 5000; i++) {
         get_random_batch(batch_x, batch_y, x, y, B);
@@ -144,6 +142,19 @@ int main() {
     elapsed_time = (end.tv_sec - start.tv_sec) + 
                    (end.tv_usec - start.tv_usec) / 1e6;
     printf("Elapsed Time: %.6f seconds\n", elapsed_time);
+
+    // 保存训练好的权重
+    FILE *f1 = fopen("w1.weights", "wb");
+    FILE *f2 = fopen("w2.weights", "wb");
+    if(!f1 || !f2) {
+        printf("错误：无法创建权重文件！\n");
+        return 1;
+    }
+    fwrite(w1->data->values, sizeof(float), w1->data->size, f1);
+    fwrite(w2->data->values, sizeof(float), w2->data->size, f2);
+    fclose(f1);
+    fclose(f2);
+    printf("权重已保存到 w1.weights 和 w2.weights\n");
 
     return 0;
 }
